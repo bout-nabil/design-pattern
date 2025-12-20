@@ -3,7 +3,7 @@ package ma.enset.model;
 public class BankAccount {
     private Long idBankAccount;
     private double balance;
-    private String currency;
+    private Currency currency;
     private AccountType type;
     private AccountStatus status;
 
@@ -11,7 +11,7 @@ public class BankAccount {
     public BankAccount() {
     }
 
-    public BankAccount(Long idBankAccount, double balance, String currency, AccountType type, AccountStatus status) {
+    public BankAccount(Long idBankAccount, double balance, Currency currency, AccountType type, AccountStatus status) {
         this.idBankAccount = idBankAccount;
         this.balance = balance;
         this.currency = currency;
@@ -28,7 +28,7 @@ public class BankAccount {
         return balance;
     }
 
-    public String getCurrency() {
+    public Currency getCurrency() {
         return currency;
     }
 
@@ -50,7 +50,7 @@ public class BankAccount {
         this.balance = balance;
     }
 
-    public void setCurrency(String currency) {
+    public void setCurrency(Currency currency) {
         this.currency = currency;
     }
 
@@ -73,5 +73,38 @@ public class BankAccount {
                 ", type=" + type +
                 ", status=" + status +
                 '}';
+    }
+
+    public static AccountBuilder builder() {
+        return new AccountBuilder();
+    }
+
+    public static class AccountBuilder{
+        private BankAccount bankAccount = new BankAccount();
+
+        public AccountBuilder idBankAccount(Long idBankAccount) {
+            bankAccount.idBankAccount = idBankAccount;
+            return this;
+        }
+        public AccountBuilder balance(double balance) {
+            bankAccount.balance = balance;
+            return this;
+        }
+        public AccountBuilder currency(Currency currency) {
+            bankAccount.currency = currency;
+            return this;
+        }
+        public AccountBuilder type(AccountType type) {
+            bankAccount.type = type;
+            return this;
+        }
+        public AccountBuilder status(AccountStatus status) {
+            bankAccount.status = status;
+            return this;
+        }
+
+        public BankAccount build() {
+            return this.bankAccount;
+        }
     }
 }
