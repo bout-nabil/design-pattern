@@ -2,8 +2,10 @@ package ma.enset;
 
 import ma.enset.model.*;
 import ma.enset.repository.AccountRepositoryImpl;
+import ma.enset.util.JsonSerializer;
 
 import java.util.List;
+import java.util.function.Predicate;
 
 
 public class Main {
@@ -17,10 +19,26 @@ public class Main {
 //                .build();
 //        System.out.println(account.toString());
 
+        JsonSerializer<BankAccount> bankAccountJsonSerializer = new JsonSerializer<>();
+
+
         AccountRepositoryImpl accountRepository = new AccountRepositoryImpl();
         accountRepository.populateTestData();
-        List<BankAccount> accountList = accountRepository.findAll();
-        accountList.forEach(System.out::println);
+        List<BankAccount> accountList = accountRepository.searchAccounts(new Predicate<BankAccount>() {
+            @Override
+            public boolean test(BankAccount bankAccount) {
+                return bankAccount.getType().equals(AccountType.CURRENT_ACCOUNT);
+            }
+        });
+        accountList.stream()
+                .map(bankAccountJsonSerializer::toJson)
+                .forEach(System.out::println);
 
+        System.out.println("====================");
+
+//        BankAccount account = accountRepository.findById(2L).orElse(null);
+//        if (account != null) {
+//            System.out.println(bankAccountJsonSerializer.toJson(account));
+//        }
     }
 }
