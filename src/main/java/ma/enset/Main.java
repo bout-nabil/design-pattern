@@ -21,15 +21,12 @@ public class Main {
 
         JsonSerializer<BankAccount> bankAccountJsonSerializer = new JsonSerializer<>();
 
-
-        AccountRepositoryImpl accountRepository = new AccountRepositoryImpl();
+        AccountRepositoryImpl accountRepository = AccountRepositoryImpl.getInstance();
         accountRepository.populateTestData();
-        List<BankAccount> accountList = accountRepository.searchAccounts(new Predicate<BankAccount>() {
-            @Override
-            public boolean test(BankAccount bankAccount) {
-                return bankAccount.getType().equals(AccountType.CURRENT_ACCOUNT);
-            }
-        });
+        List<BankAccount> accountList = accountRepository
+                .searchAccounts(bankAccount ->
+                        bankAccount.getStatus().equals(AccountStatus.ACTIVATED));
+
         accountList.stream()
                 .map(bankAccountJsonSerializer::toJson)
                 .forEach(System.out::println);

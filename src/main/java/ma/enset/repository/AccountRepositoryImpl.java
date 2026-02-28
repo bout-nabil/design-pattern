@@ -10,6 +10,13 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class AccountRepositoryImpl implements AccountRepository {
+
+    private static final AccountRepositoryImpl accountRepository;
+    static {
+        System.out.println("Static block executed: Initializing");
+        accountRepository = new AccountRepositoryImpl();
+    }
+
     private Map<Long, BankAccount> bankAccountMap = new HashMap<>();
     private Long accountIdSequence = 0L;
     @Override
@@ -64,6 +71,14 @@ public class AccountRepositoryImpl implements AccountRepository {
                     .build();
             save(account);
         }
+    }
+
+    public static AccountRepositoryImpl getInstance(){
+//        if (accountRepository==null){
+//            System.out.println("Static block executed: Initializing");
+//            accountRepository = new AccountRepositoryImpl();
+//        }
+        return accountRepository;
     }
 }
 
