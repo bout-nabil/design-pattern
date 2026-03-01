@@ -19,11 +19,17 @@ public class AccountRepositoryImpl implements AccountRepository {
 
     private Map<Long, BankAccount> bankAccountMap = new HashMap<>();
     private Long accountIdSequence = 0L;
+
     @Override
     public BankAccount save(BankAccount bankAccount) {
-        Long accountId = ++accountIdSequence;
+        Long accountId;
+        synchronized (this) { // Synchronize to ensure thread safety when generating unique account IDs
+            accountId = ++accountIdSequence;
+        }
         bankAccount.setIdBankAccount(accountId);
-        bankAccountMap.put(accountId, bankAccount);
+        synchronized (this) {
+            bankAccountMap.put(accountId, bankAccount);
+        }
         return bankAccount;
     }
 
@@ -60,7 +66,7 @@ public class AccountRepositoryImpl implements AccountRepository {
         bankAccountMap.remove(id);
     }
 
-    public void populateTestData() {
+    public synchronized void populateTestData() {
         for (int i = 0; i < 10; i++) {
             BankAccount account = BankDirector.accountBuilder()
                     .idBankAccount(++accountIdSequence)
@@ -71,9 +77,14 @@ public class AccountRepositoryImpl implements AccountRepository {
                     .build();
             save(account);
         }
+        System.out.println("******************************");
+        System.out.println(Thread.currentThread().getName());
+        System.out.println("Account count:" + accountIdSequence);
+        System.out.println("Account size: " + bankAccountMap.size());
+        System.out.println("*******************************");
     }
 
-    public static AccountRepositoryImpl getInstance(){
+    public synchronized static AccountRepositoryImpl getInstance(){
 //        if (accountRepository==null){
 //            System.out.println("Static block executed: Initializing");
 //            accountRepository = new AccountRepositoryImpl();

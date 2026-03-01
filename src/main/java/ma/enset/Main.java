@@ -4,12 +4,13 @@ import ma.enset.model.*;
 import ma.enset.repository.AccountRepositoryImpl;
 import ma.enset.util.JsonSerializer;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.function.Predicate;
 
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 //        BankAccount account = BankDirector.accountBuilder()
 //                .idBankAccount(1L)
 //                .balance(5000)
@@ -20,12 +21,18 @@ public class Main {
 //        System.out.println(account.toString());
 
         JsonSerializer<BankAccount> bankAccountJsonSerializer = new JsonSerializer<>();
-
         AccountRepositoryImpl accountRepository = AccountRepositoryImpl.getInstance();
-        accountRepository.populateTestData();
-        List<BankAccount> accountList = accountRepository
-                .searchAccounts(bankAccount ->
-                        bankAccount.getStatus().equals(AccountStatus.ACTIVATED));
+        for (int i = 0; i < 10; i++) {
+            new Thread(() -> {
+                accountRepository.populateTestData();
+            }).start();
+        }
+
+        System.out.println("Tapez sur une touche pour continuer...");
+        System.in.read();
+//        accountRepository.populateTestData();
+
+        List<BankAccount> accountList = accountRepository.findAll();
 
         accountList.stream()
                 .map(bankAccountJsonSerializer::toJson)
