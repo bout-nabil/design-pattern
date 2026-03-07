@@ -1,11 +1,12 @@
 package ma.enset.model;
 
-public class BankAccount {
+public class BankAccount implements Cloneable{
     private Long idBankAccount;
     private double balance;
     private Currency currency;
     private AccountType type;
     private AccountStatus status;
+    private Customer customer;
 
     // Constructors
     public BankAccount() {
@@ -40,6 +41,10 @@ public class BankAccount {
         return status;
     }
 
+    public Customer getCustomer() {
+        return customer;
+    }
+
     // Setters
 
     public void setIdBankAccount(Long idBankAccount) {
@@ -62,8 +67,11 @@ public class BankAccount {
         this.status = status;
     }
 
-    // toString method
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
 
+    // toString method
     @Override
     public String toString() {
         return "BankAccount{" +
@@ -72,6 +80,7 @@ public class BankAccount {
                 ", currency='" + currency + '\'' +
                 ", type=" + type +
                 ", status=" + status +
+                ", customer=" + customer +
                 '}';
     }
 
@@ -104,5 +113,9 @@ public class BankAccount {
         public BankAccount build() {
             return this.bankAccount;
         }
+    }
+    @Override
+    public BankAccount clone() throws CloneNotSupportedException {
+        return (BankAccount) super.clone();
     }
 }
